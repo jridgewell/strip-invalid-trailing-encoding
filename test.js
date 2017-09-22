@@ -28,7 +28,21 @@ describe('Strip Invalid Trailing Encoding', () => {
   });
 
   it('strips trailing % + single sequence high hex', () => {
-    for (let i = 0; i < 16; i++) {
+    for (let i = 0; i < 8; i++) {
+      const actual = 'test%' + i.toString(16);
+      assert.equal(strip(actual), 'test', actual);
+    }
+  });
+
+  it('returns empty string for trailing % + continuation high hex', () => {
+    for (let i = 8; i < 12; i++) {
+      const actual = 'test%' + i.toString(16);
+      assert.equal(strip(actual), '', actual);
+    }
+  });
+
+  it('strips trailing % + continuation start high hex', () => {
+    for (let i = 12; i < 16; i++) {
       const actual = 'test%' + i.toString(16);
       assert.equal(strip(actual), 'test', actual);
     }
