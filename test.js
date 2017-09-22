@@ -1,6 +1,6 @@
 "use strict";
 
-const expect = require('chai').expect;
+const assert = require('assert');
 const strip = require('.');
 
 describe('Strip Invalid Trailing Encoding', () => {
@@ -14,60 +14,65 @@ describe('Strip Invalid Trailing Encoding', () => {
   }
 
   it('leaves non encoded strings alone', () => {
-    expect(strip('test')).to.equal('test');
+    assert.equal(strip('test'), 'test');
   });
 
   it('leaves correctly encoded strings alone', () => {
     for (const char of validChars) {
-      expect(strip(char)).to.equal(char);
+      assert.equal(strip(char), char);
     }
   });
 
   it('strips trailing %', () => {
-    expect(strip('test%')).to.equal('test');
+    assert.equal(strip('test%'), 'test');
   });
 
-  it('strips trailing % + a hex char', () => {
+  it('strips trailing % + single sequence high hex', () => {
     for (let i = 0; i < 16; i++) {
-      expect(strip('test%' + i.toString(16))).to.equal('test');
+      const actual = 'test%' + i.toString(16);
+      assert.equal(strip(actual), 'test', actual);
     }
   });
 
   it('does not strip valid encoding followed by %', () => {
     for (const char of validChars) {
-      expect(strip(char + '%')).to.equal(char);
+      const actual = char + '%';
+      assert.equal(strip(actual), char, actual);
     }
   });
 
   it('does not strip valid encoding followed by % + a hex char', () => {
     for (const char of validChars) {
-      expect(strip(char + '%7')).to.equal(char);
+      const actual = char + '%7';
+      assert.equal(strip(actual), char, actual);
     }
   });
 
   it('strips broken encoding', () => {
     for (const char of validChars) {
-      expect(strip(char.slice(0, -1))).to.equal('');
+      const actual = char.slice(0, -1);
+      assert.equal(strip(actual), '', actual);
     }
   });
 
   it('does not strip valid encoding followed by strips broken encoding', () => {
     for (const char of validChars) {
-      expect(strip('%20' + char.slice(0, -1))).to.equal('%20');
+      const actual = '%20' + char.slice(0, -1);
+      assert.equal(strip(actual), '%20', actual);
     }
   });
 
   it('does not strip broken encoding anywhere but tail', () => {
-    expect(strip('%BE0')).to.equal('%BE0');
+    assert.equal(strip('%BE0'), '%BE0');
   });
 
   it('returns empty string if DOS detected', () => {
-    expect(strip('test%BE%BE%BE%BE%BE')).to.equal('');
+    assert.equal(strip('test%BE%BE%BE%BE'), '');
   });
 
   it('returns empty string if bad hex values detected', () => {
-    expect(strip('test%G')).to.equal('');
-    expect(strip('test%0G')).to.equal('');
-    expect(strip('test%GG')).to.equal('');
+    assert.equal(strip('test%G'), '', 'test%G');
+    assert.equal(strip('test%0G'), '', 'test%0G');
+    assert.equal(strip('test%GG'), '', 'test%GG');
   });
 });
