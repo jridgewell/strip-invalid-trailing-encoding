@@ -1,0 +1,31 @@
+{
+  "name": "strip-invalid-trailing-encoding",
+  "version": "1.0.0",
+  "description": "Strips improperly truncated percent encodings",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jridgewell/strip-invalid-trailing-encoding.git"
+  },
+  "keywords": [
+    "percent",
+    "encoding",
+    "encodeURI",
+    "encodeURIComponent",
+    "decodeURI",
+    "decodeURIComponent"
+  ],
+  "author": "Justin Ridgewell",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jridgewell/strip-invalid-trailing-encoding/issues"
+  },
+  "homepage": "https://github.com/jridgewell/strip-invalid-trailing-encoding#readme",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^3.5.3"
+  }
+}
