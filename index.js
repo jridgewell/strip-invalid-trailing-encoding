@@ -1,8 +1,11 @@
 "use strict";
 
+const INVALID_HEX = 16;
+const NO_PERCENT = 3;
+
 /**
  * Parses a (possibly) hex char into its int value.
- * If the char is not valid hex char, returns 16.
+ * If the char is not valid hex char, returns INVALID_HEX.
  *
  * @param {string} char
  * @return {number}
@@ -21,11 +24,12 @@ function toHex(char) {
   }
 
   // Invalid Hex
-  return 16;
+  return INVALID_HEX;
 }
 
 /**
  * Determines if a '%' character occurs in the last 3 characters of a string.
+ * If none, returns NO_PERCENT.
  *
  * @param {string} string
  * @param {number} length
@@ -42,7 +46,7 @@ function hasPercent(string, length) {
     return 0;
   }
 
-  return 3;
+  return NO_PERCENT;
 }
 
 /**
@@ -55,17 +59,11 @@ function hasPercent(string, length) {
  * from throwing. Attackers can craft strings will not be "fixed" by stripping.
  *
  * @param {string} string
+ * @param {number} length The length of the string.
+ * @param {number} shift Position of the rightmost %.
  * @return {string}
  */
-function strip(string) {
-  const length = string.length;
-  const shift = hasPercent(string, length);
-
-  // A shift of 3 means that there's no % in the last 3 chars. Nothing to do.
-  if (shift === 3) {
-    return string;
-  }
-
+function strip(string, length, shift) {
   let end = length - shift;
   let num = -shift;
   let high = '8';
@@ -177,4 +175,14 @@ function strip(string) {
   return string.substr(0, end);
 }
 
-module.exports = strip;
+module.exports = function(string) {
+  const length = string.length;
+  const shift = hasPercent(string, length);
+
+  // If no % in the last 3 chars, then the string wasn't trimmed.
+  if (shift === NO_PERCENT) {
+    return string;
+  }
+
+  return strip(string, length, shift);
+};
